@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "app_credentials" {
-  name                    = "cloudnest-app-credentials"
+  name                    = "cloudnest-app"
   description             = "Credentials for CloudNest application"
   recovery_window_in_days = 0
 }

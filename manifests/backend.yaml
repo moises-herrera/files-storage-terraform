@@ -37,16 +37,18 @@ spec:
             - name: PORT
               value: "3000"
             - name: FRONTEND_URL
-              value: "http://k8s-cloudnes-frontend-27289c282c-37c7622f9c1942cb.elb.us-east-1.amazonaws.com"
+              value: "http://k8s-cloudnes-frontend-5566782515-4333cb7d57b23c10.elb.us-east-1.amazonaws.com"
+            - name: AWS_SECRET_NAME
+              value: "cloudnest-app"
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 5
