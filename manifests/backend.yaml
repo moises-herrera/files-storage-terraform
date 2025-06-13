@@ -37,7 +37,7 @@ spec:
             - name: PORT
               value: "3000"
             - name: FRONTEND_URL
-              value: "https://your-frontend-domain.com"
+              value: "http://k8s-cloudnes-frontend-27289c282c-37c7622f9c1942cb.elb.us-east-1.amazonaws.com"
           livenessProbe:
             httpGet:
               path: /health
@@ -57,6 +57,11 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+      tolerations:
+        - key: "app"
+          operator: "Equal"
+          value: "backend"
+          effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: Service

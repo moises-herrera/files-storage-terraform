@@ -8,15 +8,10 @@ module "app_vpc" {
   cluster_name    = var.cluster_name
 }
 
-module "app_iam" {
-  source = "./modules/iam"
-  cluster_name = var.cluster_name
-}
-
 module "app_security_groups" {
   source   = "./modules/security-groups"
   vpc_id   = module.app_vpc.vpc_id
-  vpc_cidr = module.app_vpc.vpc_cidr
+  vpc_cidr = var.vpc_cidr
 }
 
 module "app_rds" {
@@ -27,14 +22,22 @@ module "app_rds" {
   db_user            = var.db_user
 }
 
+module "app_secrets" {
+  source                = "./modules/secrets"
+  db_hostname           = module.app_rds.db_hostname
+  db_port               = module.app_rds.db_port
+  db_name               = module.app_rds.db_name
+  db_user               = module.app_rds.db_user
+  db_master_user_secret = module.app_rds.db_master_user_secret
+}
+
 module "app_eks" {
   source       = "./modules/eks"
   eks_version  = var.eks_version
   cluster_name = var.cluster_name
   vpc_id       = module.app_vpc.vpc_id
   subnet_ids   = module.app_vpc.private_subnets
-  
   additional_security_group_ids = [module.app_security_groups.eks_to_rds_security_group_id]
-  
+
   depends_on = [module.app_security_groups]
 }

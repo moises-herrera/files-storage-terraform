@@ -63,9 +63,3 @@ variable "db_user" {
   type        = string
   default     = "postgres"
 }
-
-variable "db_password" {
-  description = "Database password"
-  type        = string
-  default     = "Db_4dm1n_Root"
-}

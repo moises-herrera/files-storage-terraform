@@ -37,20 +37,3 @@ resource "aws_db_instance" "main" {
     Environment = "development"
   }
 }
-
-resource "aws_secretsmanager_secret" "db_credentials" {
-  name                    = "cloudnest/database"
-  description             = "Database credentials for CloudNest application"
-  recovery_window_in_days = 0 
-}
-
-resource "aws_secretsmanager_secret_version" "db_credentials" {
-  secret_id = aws_secretsmanager_secret.db_credentials.id
-  secret_string = jsonencode({
-    username = aws_db_instance.main.username
-    endpoint = aws_db_instance.main.endpoint
-    port     = aws_db_instance.main.port
-    dbname   = aws_db_instance.main.db_name
-    master_user_secret_arn = aws_db_instance.main.master_user_secret[0].secret_arn
-  })
-}
