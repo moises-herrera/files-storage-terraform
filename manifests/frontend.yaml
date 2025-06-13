@@ -22,7 +22,7 @@ spec:
             - containerPort: 80
           env:
             - name: API_URL
-              value: "http://internal-k8s-cloudnes-backendi-93119faa67-1924610577.us-east-1.elb.amazonaws.com/api"
+              value: 'http://k8s-cloudnes-backends-d2d34b5507-9329152e2ba8cdee.elb.us-east-1.amazonaws.com/api'
           resources:
             requests:
               memory: '128Mi'
@@ -31,10 +31,10 @@ spec:
               memory: '256Mi'
               cpu: '200m'
       tolerations:
-        - key: "app"
-          operator: "Equal"
-          value: "frontend"
-          effect: "NoSchedule"
+        - key: 'app'
+          operator: 'Equal'
+          value: 'frontend'
+          effect: 'NoSchedule'
 ---
 apiVersion: v1
 kind: Service

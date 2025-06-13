@@ -31,15 +31,15 @@ spec:
             - containerPort: 3000
           env:
             - name: AWS_REGION
-              value: "us-east-1"
+              value: 'us-east-1'
             - name: NODE_ENV
-              value: "production"
+              value: 'production'
             - name: PORT
-              value: "3000"
+              value: '3000'
             - name: FRONTEND_URL
-              value: "http://k8s-cloudnes-frontend-5566782515-4333cb7d57b23c10.elb.us-east-1.amazonaws.com"
+              value: 'http://k8s-cloudnes-frontend-0293d839e2-8ae22faa45a01a89.elb.us-east-1.amazonaws.com'
             - name: AWS_SECRET_NAME
-              value: "cloudnest-app"
+              value: 'cloudnest-app'
           livenessProbe:
             httpGet:
               path: /api/health
@@ -54,51 +54,30 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: '256Mi'
+              cpu: '250m'
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: '512Mi'
+              cpu: '500m'
       tolerations:
-        - key: "app"
-          operator: "Equal"
-          value: "backend"
-          effect: "NoSchedule"
+        - key: 'app'
+          operator: 'Equal'
+          value: 'backend'
+          effect: 'NoSchedule'
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
   namespace: cloudnest-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 spec:
+  type: LoadBalancer
   selector:
     app: backend
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 3000
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: backend-ingress
-  namespace: cloudnest-app
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internal
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/healthcheck-path: /health
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
-                port:
-                  number: 80
